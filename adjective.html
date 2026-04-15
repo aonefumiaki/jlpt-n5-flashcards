@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JLPT N5 Adjectives — Ohanasi JP School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F0FB; --surface: #FFFFFF; --ink: #1A1520; --ink2: #6B6075; --ink3: #ABA7B5;
+    --accent: #6C3483; --danger: #C1440E; --success: #2D6A4F;
+    --border: rgba(26,21,32,0.10); --radius: 16px;
+    --font-display: 'DM Serif Display', serif; --font-body: 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-body); background: var(--bg); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
+  header { padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .logo { font-family: var(--font-display); font-size: 1.25rem; color: var(--ink); }
+  .logo span { color: var(--accent); }
+  .header-badge { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: rgba(108,52,131,0.10); padding: 4px 10px; border-radius: 99px; }
+  main { flex: 1; max-width: 680px; width: 100%; margin: 0 auto; padding: 1.5rem 1rem 3rem; display: flex; flex-direction: column; gap: 1rem; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  select { flex: 1; min-width: 180px; height: 40px; padding: 0 32px 0 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-family: var(--font-body); font-size: 0.875rem; color: var(--ink); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6075' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+  select:focus { outline: none; border-color: var(--accent); }
+  .btn { height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-family: var(--font-body); font-size: 0.8rem; font-weight: 500; color: var(--ink2); cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+  .btn:hover { background: var(--bg); color: var(--ink); }
+  .btn.danger { border-color: rgba(193,68,14,0.3); color: var(--danger); }
+  .btn.danger:hover { background: rgba(193,68,14,0.05); }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; }
+  .progress-bar { flex: 1; height: 3px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.4s ease; }
+  .progress-label { font-size: 0.75rem; color: var(--ink3); min-width: 48px; text-align: right; }
+  .mode-banner { display: none; background: #FEF3CD; border: 1px solid #EF9F27; border-radius: 10px; padding: 8px 16px; font-size: 12px; color: #854F0B; text-align: center; }
+  .mode-banner.show { display: block; }
+  .type-badge { display: inline-block; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; margin-bottom: 0.75rem; }
+  .type-i { background: rgba(108,52,131,0.12); color: var(--accent); }
+  .type-na { background: rgba(45,106,79,0.12); color: var(--success); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem 2rem; cursor: pointer; position: relative; transition: box-shadow 0.2s, transform 0.15s; user-select: none; }
+  .card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); transform: translateY(-1px); }
+  .card.flipped { background: #F5F0FB; border-color: rgba(108,52,131,0.2); }
+  .card.review { background: #FFF8F0; border-color: rgba(186,117,23,0.3); }
+  .card-cat { position: absolute; top: 14px; right: 16px; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink3); }
+  .card-num { position: absolute; top: 14px; left: 16px; font-size: 0.68rem; color: var(--ink3); }
+  .card-main { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .card-word { font-family: var(--font-display); font-size: clamp(2rem, 8vw, 3.2rem); color: var(--ink); line-height: 1.1; margin-bottom: 4px; }
+  .card-romaji { font-size: 0.78rem; color: var(--ink3); letter-spacing: 0.04em; margin-bottom: 2px; }
+  .card-furi { font-size: 1rem; color: var(--ink2); }
+  .card-conj { font-size: 0.75rem; color: var(--ink3); margin-top: 10px; line-height: 2; }
+  .card-answer { font-family: var(--font-display); font-size: clamp(1.5rem, 6vw, 2.4rem); color: var(--accent); text-align: center; line-height: 1.2; }
+  .card-hint { position: absolute; bottom: 14px; font-size: 0.72rem; color: var(--ink3); }
+  .nav-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .nav-btn { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: 1rem; color: var(--ink2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .nav-btn:hover { background: var(--bg); color: var(--ink); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .counter { font-size: 0.8rem; color: var(--ink3); min-width: 56px; text-align: center; }
+  .play-btn { height: 40px; padding: 0 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-family: var(--font-body); font-size: 0.8rem; font-weight: 500; color: var(--ink2); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
+  .play-btn:hover { background: var(--bg); color: var(--ink); }
+  .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .action-btn { height: 48px; border-radius: 12px; border: 1.5px solid; background: transparent; font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+  .action-btn.again { border-color: rgba(193,68,14,0.3); color: var(--danger); }
+  .action-btn.again:hover { background: rgba(193,68,14,0.06); }
+  .action-btn.gotit { border-color: rgba(108,52,131,0.3); color: var(--accent); }
+  .action-btn.gotit:hover { background: rgba(108,52,131,0.06); }
+  .review-btn { width: 100%; height: 42px; border-radius: 12px; border: 1px solid rgba(186,117,23,0.4); background: transparent; font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; color: #854F0B; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s; }
+  .review-btn:hover:not(:disabled) { background: rgba(186,117,23,0.06); }
+  .review-btn:disabled { opacity: 0.3; cursor: default; }
+  .review-btn.active { background: rgba(186,117,23,0.10); border-color: #BA7517; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 0.5rem; text-align: center; }
+  .stat-num { font-family: var(--font-display); font-size: 1.5rem; line-height: 1; color: var(--ink); margin-bottom: 2px; }
+  .stat-num.purple { color: var(--accent); }
+  .stat-num.red { color: var(--danger); }
+  .stat-num.amber { color: #854F0B; }
+  .stat-label { font-size: 0.68rem; color: var(--ink3); letter-spacing: 0.04em; text-transform: uppercase; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--ink3); border-top: 1px solid var(--border); }
+  footer a { color: var(--accent); text-decoration: none; }
+  @media (max-width: 480px) { .stats { grid-template-columns: repeat(2, 1fr); } .card { min-height: 260px; padding: 2rem 1.25rem; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Ohanasi <span>JP</span> School</div>
+  <div class="header-badge">JLPT N5 · Adjectives</div>
+</header>
+<main>
+  <div class="controls">
+    <select id="catSelect" onchange="changeCat()"></select>
+    <button class="btn" id="modeBtn" onclick="toggleMode()">EN → JA</button>
+    <button class="btn" onclick="shuffle()">Shuffle</button>
+    <button class="btn danger" onclick="resetAll()">Reset</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-label" id="progLabel">0%</div>
+  </div>
+  <div class="mode-banner" id="modeBanner">復習モード — Again のカードのみ表示中</div>
+  <div class="card" id="card" onclick="flip()">
+    <span class="card-num" id="cardNum"></span>
+    <span class="card-cat" id="cardCat"></span>
+    <div class="card-main" id="frontSide">
+      <div class="type-badge" id="typeBadge"></div>
+      <div class="card-word" id="cardWord"></div>
+      <div class="card-romaji" id="cardRomaji"></div>
+      <div class="card-furi" id="cardFuri"></div>
+      <div class="card-conj" id="cardConj"></div>
+    </div>
+    <div id="backSide" style="display:none">
+      <div class="card-answer" id="cardAnswer"></div>
+    </div>
+    <div class="card-hint" id="cardHint">Tap to reveal</div>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn" onclick="prev()" id="prevBtn">&#8592;</button>
+    <span class="counter" id="counter"></span>
+    <button class="nav-btn" onclick="next()" id="nextBtn">&#8594;</button>
+    <button class="play-btn" onclick="speak()">
+      <svg style="width:14px;height:14px" viewBox="0 0 14 14" fill="none">
+        <circle cx="7" cy="7" r="6.5" stroke="currentColor" stroke-width="1"/>
+        <path d="M5.5 4.5l4 2.5-4 2.5V4.5z" fill="currentColor"/>
+      </svg>
+      Play
+    </button>
+  </div>
+  <div class="action-row">
+    <button class="action-btn again" onclick="mark('again')">Again</button>
+    <button class="action-btn gotit" onclick="mark('ok')">Got it ✓</button>
+  </div>
+  <button class="review-btn" id="reviewBtn" onclick="toggleReview()" disabled>
+    <svg style="width:13px;height:13px" viewBox="0 0 13 13" fill="none">
+      <path d="M2 6.5a4.5 4.5 0 108-2.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M10 1.5v2.2H7.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Review Again Cards (<span id="againCount">0</span>)
+  </button>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="sTot">0</div><div class="stat-label">Total</div></div>
+    <div class="stat"><div class="stat-num" id="sRem">0</div><div class="stat-label">Remaining</div></div>
+    <div class="stat"><div class="stat-num purple" id="sOk">0</div><div class="stat-label">Got it</div></div>
+    <div class="stat"><div class="stat-num amber" id="sAg">0</div><div class="stat-label">Again</div></div>
+  </div>
+</main>
+<footer>
+  Made with love by <a href="https://ohanasi-jpschool-members.com" target="_blank">Ohanasi JP School</a> &nbsp;·&nbsp; JLPT N5 Adjective Vocabulary
+</footer>
+
+<script>
+const STORAGE_KEY = 'ohanasi_n5_adjectives';
+
+// [hiragana, romaji, english, kanji, type, negative, past]
+const ALL_DATA = {
+  "i-Adj: Size & Shape":[
+    ["おおきい","ōkii","big / large","大きい","i","大きくない","大きかった"],
+    ["ちいさい","chīsai","small / little","小さい","i","小さくない","小さかった"],
+    ["ながい","nagai","long","長い","i","長くない","長かった"],
+    ["みじかい","mijikai","short","短い","i","短くない","短かった"],
+    ["ひろい","hiroi","wide / spacious","広い","i","広くない","広かった"],
+    ["せまい","semai","narrow / small","狭い","i","狭くない","狭かった"],
+    ["おおい","ōi","many / much","多い","i","多くない","多かった"],
+    ["すくない","sukunai","few / little","少ない","i","少なくない","少なかった"],
+    ["ふとい","futoi","thick / fat","太い","i","太くない","太かった"],
+    ["ほそい","hosoi","thin / slim","細い","i","細くない","細かった"],
+    ["たかい","takai","tall / high / expensive","高い","i","高くない","高かった"],
+    ["ひくい","hikui","low / short (height)","低い","i","低くない","低かった"],
+    ["とおい","tōi","far / distant","遠い","i","遠くない","遠かった"],
+    ["ちかい","chikai","near / close","近い","i","近くない","近かった"],
+    ["まるい","marui","round","丸い","i","丸くない","丸かった"]
+  ],
+  "i-Adj: Quality & Value":[
+    ["いい・よい","ii / yoi","good","いい","i","よくない","よかった"],
+    ["わるい","warui","bad","悪い","i","悪くない","悪かった"],
+    ["あたらしい","atarashii","new","新しい","i","新しくない","新しかった"],
+    ["ふるい","furui","old (things)","古い","i","古くない","古かった"],
+    ["やすい","yasui","cheap","安い","i","安くない","安かった"],
+    ["おもしろい","omoshiroi","interesting / funny","面白い","i","面白くない","面白かった"],
+    ["つまらない","tsumaranai","boring / dull","つまらない","i","つまらなくない","つまらなかった"],
+    ["むずかしい","muzukashii","difficult","難しい","i","難しくない","難しかった"],
+    ["やさしい","yasashii","easy / gentle","優しい","i","優しくない","優しかった"],
+    ["めずらしい","mezurashii","rare / unusual","珍しい","i","珍しくない","珍しかった"],
+    ["すばらしい","subarashii","wonderful","素晴らしい","i","素晴らしくない","素晴らしかった"],
+    ["ただしい","tadashii","correct / right","正しい","i","正しくない","正しかった"],
+    ["おかしい","okashii","strange / funny","おかしい","i","おかしくない","おかしかった"],
+    ["すごい","sugoi","amazing / great","すごい","i","すごくない","すごかった"],
+    ["ひどい","hidoi","terrible / awful","ひどい","i","ひどくない","ひどかった"]
+  ],
+  "i-Adj: Temperature & Speed":[
+    ["あつい","atsui","hot (weather / thing)","暑い / 熱い","i","暑くない","暑かった"],
+    ["さむい","samui","cold (weather)","寒い","i","寒くない","寒かった"],
+    ["つめたい","tsumetai","cold (touch)","冷たい","i","冷たくない","冷たかった"],
+    ["あたたかい","atatakai","warm","暖かい","i","暖かくない","暖かかった"],
+    ["すずしい","suzushii","cool (weather)","涼しい","i","涼しくない","涼しかった"],
+    ["はやい","hayai","fast / early","速い / 早い","i","速くない","速かった"],
+    ["おそい","osoi","slow / late","遅い","i","遅くない","遅かった"]
+  ],
+  "i-Adj: Colors & Light":[
+    ["あかるい","akarui","bright","明るい","i","明るくない","明るかった"],
+    ["くらい","kurai","dark","暗い","i","暗くない","暗かった"],
+    ["しろい","shiroi","white","白い","i","白くない","白かった"],
+    ["くろい","kuroi","black","黒い","i","黒くない","黒かった"],
+    ["あおい","aoi","blue","青い","i","青くない","青かった"],
+    ["あかい","akai","red","赤い","i","赤くない","赤かった"],
+    ["きいろい","kiiroi","yellow","黄色い","i","黄色くない","黄色かった"],
+    ["ちゃいろい","chairoi","brown","茶色い","i","茶色くない","茶色かった"]
+  ],
+  "i-Adj: Feelings":[
+    ["うれしい","ureshii","happy / glad","嬉しい","i","嬉しくない","嬉しかった"],
+    ["かなしい","kanashii","sad","悲しい","i","悲しくない","悲しかった"],
+    ["たのしい","tanoshii","fun / enjoyable","楽しい","i","楽しくない","楽しかった"],
+    ["こわい","kowai","scary","怖い","i","怖くない","怖かった"],
+    ["いそがしい","isogashii","busy","忙しい","i","忙しくない","忙しかった"],
+    ["さびしい","sabishii","lonely","寂しい","i","寂しくない","寂しかった"],
+    ["はずかしい","hazukashii","embarrassed / shy","恥ずかしい","i","恥ずかしくない","恥ずかしかった"],
+    ["ねむい","nemui","sleepy","眠い","i","眠くない","眠かった"],
+    ["いたい","itai","painful","痛い","i","痛くない","痛かった"],
+    ["なつかしい","natsukashii","nostalgic","懐かしい","i","懐かしくない","懐かしかった"],
+    ["くやしい","kuyashii","frustrated","悔しい","i","悔しくない","悔しかった"],
+    ["うらやましい","urayamashii","envious","羨ましい","i","羨ましくない","羨ましかった"]
+  ],
+  "i-Adj: Personality":[
+    ["かわいい","kawaii","cute","かわいい","i","かわいくない","かわいかった"],
+    ["うつくしい","utsukushii","beautiful","美しい","i","美しくない","美しかった"],
+    ["わかい","wakai","young","若い","i","若くない","若かった"],
+    ["つよい","tsuyoi","strong","強い","i","強くない","強かった"],
+    ["よわい","yowai","weak","弱い","i","弱くない","弱かった"],
+    ["かしこい","kashikoi","clever / smart","賢い","i","賢くない","賢かった"],
+    ["きびしい","kibishii","strict","厳しい","i","厳しくない","厳しかった"],
+    ["おとなしい","otonashii","quiet / well-behaved","大人しい","i","大人しくない","大人しかった"],
+    ["ありがたい","arigatai","grateful","有り難い","i","有り難くない","有り難かった"],
+    ["もったいない","mottainai","wasteful","もったいない","i","もったいなくない","もったいなかった"]
+  ],
+  "i-Adj: Food & Taste":[
+    ["おいしい","oishii","delicious","美味しい","i","美味しくない","美味しかった"],
+    ["まずい","mazui","bad taste","まずい","i","まずくない","まずかった"],
+    ["からい","karai","spicy","辛い","i","辛くない","辛かった"],
+    ["あまい","amai","sweet","甘い","i","甘くない","甘かった"],
+    ["しょっぱい","shoppai","salty","しょっぱい","i","しょっぱくない","しょっぱかった"],
+    ["すっぱい","suppai","sour","酸っぱい","i","酸っぱくない","酸っぱかった"],
+    ["にがい","nigai","bitter","苦い","i","苦くない","苦かった"],
+    ["あぶらっこい","aburakkoi","greasy / oily","脂っこい","i","脂っこくない","脂っこかった"]
+  ],
+  "i-Adj: Physical":[
+    ["おもい","omoi","heavy","重い","i","重くない","重かった"],
+    ["かるい","karui","light (weight)","軽い","i","軽くない","軽かった"],
+    ["かたい","katai","hard / stiff","硬い","i","硬くない","硬かった"],
+    ["やわらかい","yawarakai","soft","柔らかい","i","柔らかくない","柔らかかった"],
+    ["うすい","usui","thin / light","薄い","i","薄くない","薄かった"],
+    ["きたない","kitanai","dirty","汚い","i","汚くない","汚かった"],
+    ["うるさい","urusai","noisy / loud","うるさい","i","うるさくない","うるさかった"],
+    ["あぶない","abunai","dangerous","危ない","i","危なくない","危なかった"]
+  ],
+  "na-Adj: Feelings & Personality":[
+    ["すき","suki","like / fond of","好き","na","好きじゃない","好きだった"],
+    ["きらい","kirai","dislike","嫌い","na","嫌いじゃない","嫌いだった"],
+    ["だいすき","daisuki","love / really like","大好き","na","大好きじゃない","大好きだった"],
+    ["だいきらい","daikirai","really hate","大嫌い","na","大嫌いじゃない","大嫌いだった"],
+    ["げんき","genki","healthy / energetic","元気","na","元気じゃない","元気だった"],
+    ["しんせつ","shinsetsu","kind / helpful","親切","na","親切じゃない","親切だった"],
+    ["まじめ","majime","serious / diligent","真面目","na","真面目じゃない","真面目だった"],
+    ["しあわせ","shiawase","happy / fortunate","幸せ","na","幸せじゃない","幸せだった"],
+    ["ざんねん","zannen","disappointing","残念","na","残念じゃない","残念だった"],
+    ["ていねい","teinei","polite / careful","丁寧","na","丁寧じゃない","丁寧だった"],
+    ["かわいそう","kawaisō","pitiful","かわいそう","na","かわいそうじゃない","かわいそうだった"]
+  ],
+  "na-Adj: Ability & Skill":[
+    ["じょうず","jōzu","good at / skilled","上手","na","上手じゃない","上手だった"],
+    ["へた","heta","bad at / unskilled","下手","na","下手じゃない","下手だった"],
+    ["とくい","tokui","one's forte","得意","na","得意じゃない","得意だった"],
+    ["にがて","nigate","weak point","苦手","na","苦手じゃない","苦手だった"],
+    ["あんぜん","anzen","safe","安全","na","安全じゃない","安全だった"],
+    ["きけん","kiken","dangerous","危険","na","危険じゃない","危険だった"],
+    ["かんたん","kantan","simple / easy","簡単","na","簡単じゃない","簡単だった"],
+    ["ふくざつ","fukuzatsu","complicated","複雑","na","複雑じゃない","複雑だった"]
+  ],
+  "na-Adj: Appearance & State":[
+    ["きれい","kirei","pretty / clean","きれい","na","きれいじゃない","きれいだった"],
+    ["しずか","shizuka","quiet","静か","na","静かじゃない","静かだった"],
+    ["にぎやか","nigiyaka","lively / bustling","にぎやか","na","にぎやかじゃない","にぎやかだった"],
+    ["ゆうめい","yūmei","famous","有名","na","有名じゃない","有名だった"],
+    ["すてき","suteki","wonderful / lovely","素敵","na","素敵じゃない","素敵だった"],
+    ["べんり","benri","convenient","便利","na","便利じゃない","便利だった"],
+    ["ふべん","fuben","inconvenient","不便","na","不便じゃない","不便だった"],
+    ["たいへん","taihen","tough / hard","大変","na","大変じゃない","大変だった"],
+    ["だいじょうぶ","daijōbu","okay / alright","大丈夫","na","大丈夫じゃない","大丈夫だった"],
+    ["へん","hen","strange / weird","変","na","変じゃない","変だった"],
+    ["ふつう","futsū","ordinary / normal","普通","na","普通じゃない","普通だった"],
+    ["とくべつ","tokubetsu","special","特別","na","特別じゃない","特別だった"],
+    ["ひつよう","hitsuyō","necessary","必要","na","必要じゃない","必要だった"],
+    ["むり","muri","impossible","無理","na","無理じゃない","無理だった"],
+    ["だめ","dame","no good / not allowed","だめ","na","だめじゃない","だめだった"],
+    ["らく","raku","easy / comfortable","楽","na","楽じゃない","楽だった"],
+    ["たいせつ","taisetsu","important / precious","大切","na","大切じゃない","大切だった"],
+    ["だいじ","daiji","important","大事","na","大事じゃない","大事だった"],
+    ["すなお","sunao","honest / obedient","素直","na","素直じゃない","素直だった"],
+    ["ゆたか","yutaka","rich / abundant","豊か","na","豊かじゃない","豊かだった"],
+    ["へいわ","heiwa","peaceful","平和","na","平和じゃない","平和だった"],
+    ["あんしん","anshin","relief / at ease","安心","na","安心じゃない","安心だった"],
+    ["しんぱい","shinpai","worried / anxious","心配","na","心配じゃない","心配だった"],
+    ["むだ","muda","wasteful / useless","無駄","na","無駄じゃない","無駄だった"],
+    ["けんこう","kenkō","healthy","健康","na","健康じゃない","健康だった"],
+    ["じゆう","jiyū","free","自由","na","自由じゃない","自由だった"],
+    ["まあまあ","māmā","so-so","まあまあ","na","まあまあじゃない","まあまあだった"]
+  ]
+};
+
+const CATS = ["All Adjectives","All i-Adjectives","All na-Adjectives",...Object.keys(ALL_DATA)];
+
+function loadStorage() {
+  try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : { gotit:[], again:[] }; }
+  catch(e) { return { gotit:[], again:[] }; }
+}
+function saveStorage() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ gotit:[...gotitSet], again:[...againSet] })); }
+  catch(e) {}
+}
+
+let stored = loadStorage();
+let gotitSet = new Set(stored.gotit);
+let againSet = new Set(stored.again);
+let allDeck = [], activeDeck = [], idx = 0, flipped = false, mode = "ja", reviewMode = false;
+
+function makeKey(w) { return w[0] + '_' + w[1]; }
+
+function buildDeck(catName) {
+  let words = [];
+  if (catName === "All Adjectives") {
+    Object.entries(ALL_DATA).forEach(([cat, ws]) => ws.forEach(w => words.push({ cat, w })));
+  } else if (catName === "All i-Adjectives") {
+    Object.entries(ALL_DATA).filter(([k]) => k.startsWith("i-")).forEach(([cat, ws]) => ws.forEach(w => words.push({ cat, w })));
+  } else if (catName === "All na-Adjectives") {
+    Object.entries(ALL_DATA).filter(([k]) => k.startsWith("na-")).forEach(([cat, ws]) => ws.forEach(w => words.push({ cat, w })));
+  } else {
+    (ALL_DATA[catName] || []).forEach(w => words.push({ cat: catName, w }));
+  }
+  allDeck = words;
+  reviewMode = false;
+  document.getElementById('modeBanner').classList.remove('show');
+  document.getElementById('reviewBtn').classList.remove('active');
+  activeDeck = allDeck.filter(item => !gotitSet.has(makeKey(item.w)));
+  idx = 0; flipped = false;
+  render();
+}
+
+function render() {
+  updateStats();
+  updateReviewBtn();
+  if (!activeDeck.length) {
+    document.getElementById('cardWord').textContent = reviewMode ? "復習完了！" : "全部マスター！";
+    document.getElementById('cardRomaji').textContent = "";
+    document.getElementById('cardFuri').textContent = "";
+    document.getElementById('cardConj').textContent = "";
+    document.getElementById('cardAnswer').textContent = "";
+    document.getElementById('cardHint').textContent = "";
+    document.getElementById('cardCat').textContent = "";
+    document.getElementById('cardNum').textContent = "";
+    document.getElementById('typeBadge').textContent = "";
+    document.getElementById('counter').textContent = "0 / 0";
+    document.getElementById('progFill').style.width = "100%";
+    document.getElementById('progLabel').textContent = "100%";
+    document.getElementById('prevBtn').disabled = true;
+    document.getElementById('nextBtn').disabled = true;
+    return;
+  }
+  const { cat, w } = activeDeck[idx];
+  const [furi, romaji, en, kanji, type, neg, past] = w;
+  flipped = false;
+  document.getElementById('cardCat').textContent = reviewMode ? "復習モード" : cat;
+  document.getElementById('cardNum').textContent = (idx + 1) + " / " + activeDeck.length;
+  const badge = document.getElementById('typeBadge');
+  badge.textContent = type === "i" ? "i-adjective" : "na-adjective";
+  badge.className = "type-badge " + (type === "i" ? "type-i" : "type-na");
+  const displayWord = (kanji && kanji !== furi) ? kanji : furi;
+  const showFuri = kanji && kanji !== furi;
+  if (mode === "ja") {
+    document.getElementById('cardWord').textContent = displayWord;
+    document.getElementById('cardRomaji').textContent = romaji;
+    document.getElementById('cardFuri').textContent = showFuri ? furi : "";
+    document.getElementById('cardConj').textContent = "(-) " + neg + "　　(past) " + past;
+    document.getElementById('cardAnswer').textContent = en;
+    document.getElementById('cardHint').textContent = "Tap to reveal English";
+  } else {
+    document.getElementById('cardWord').textContent = en;
+    document.getElementById('cardRomaji').textContent = "";
+    document.getElementById('cardFuri').textContent = "";
+    document.getElementById('cardConj').textContent = "";
+    document.getElementById('cardAnswer').textContent = showFuri ? kanji + "（" + furi + "）" : furi;
+    document.getElementById('cardHint').textContent = "Tap to reveal Japanese";
+  }
+  document.getElementById('frontSide').style.cssText = 'display:flex;flex-direction:column;align-items:center';
+  document.getElementById('backSide').style.display = 'none';
+  document.getElementById('card').className = 'card' + (reviewMode ? ' review' : '');
+  const total = allDeck.length;
+  const mastered = allDeck.filter(item => gotitSet.has(makeKey(item.w))).length;
+  const pct = total > 0 ? Math.round((mastered / total) * 100) : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = pct + '%';
+  document.getElementById('counter').textContent = (idx + 1) + " / " + activeDeck.length;
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === activeDeck.length - 1;
+}
+
+function updateStats() {
+  const total = allDeck.length;
+  const mastered = allDeck.filter(item => gotitSet.has(makeKey(item.w))).length;
+  const againCount = allDeck.filter(item => againSet.has(makeKey(item.w))).length;
+  document.getElementById('sTot').textContent = total;
+  document.getElementById('sRem').textContent = total - mastered;
+  document.getElementById('sOk').textContent = mastered;
+  document.getElementById('sAg').textContent = againCount;
+}
+
+function updateReviewBtn() {
+  const againCount = allDeck.filter(item => againSet.has(makeKey(item.w))).length;
+  document.getElementById('againCount').textContent = againCount;
+  document.getElementById('reviewBtn').disabled = againCount === 0;
+}
+
+function flip() {
+  if (!activeDeck.length) return;
+  flipped = !flipped;
+  document.getElementById('frontSide').style.cssText = flipped ? 'display:none' : 'display:flex;flex-direction:column;align-items:center';
+  document.getElementById('backSide').style.cssText = flipped ? 'display:flex;flex-direction:column;align-items:center' : 'display:none';
+  document.getElementById('card').className = (flipped ? 'card flipped' : 'card') + (reviewMode ? ' review' : '');
+  document.getElementById('cardHint').textContent = flipped ? "" : (mode === "ja" ? "Tap to reveal English" : "Tap to reveal Japanese");
+}
+
+function mark(type) {
+  if (!activeDeck.length) return;
+  const key = makeKey(activeDeck[idx].w);
+  if (type === 'ok') {
+    gotitSet.add(key);
+    againSet.delete(key);
+    saveStorage();
+    activeDeck.splice(idx, 1);
+    if (idx >= activeDeck.length) idx = Math.max(0, activeDeck.length - 1);
+  } else {
+    againSet.add(key);
+    gotitSet.delete(key);
+    saveStorage();
+    if (idx < activeDeck.length - 1) idx++;
+  }
+  render();
+}
+
+function next() { if (idx < activeDeck.length - 1) { idx++; render(); } }
+function prev() { if (idx > 0) { idx--; render(); } }
+
+function toggleReview() {
+  if (!reviewMode) {
+    const againItems = allDeck.filter(item => againSet.has(makeKey(item.w)));
+    if (!againItems.length) return;
+    reviewMode = true;
+    activeDeck = againItems;
+    idx = 0; flipped = false;
+    document.getElementById('modeBanner').classList.add('show');
+    document.getElementById('reviewBtn').classList.add('active');
+  } else {
+    reviewMode = false;
+    activeDeck = allDeck.filter(item => !gotitSet.has(makeKey(item.w)));
+    idx = 0; flipped = false;
+    document.getElementById('modeBanner').classList.remove('show');
+    document.getElementById('reviewBtn').classList.remove('active');
+  }
+  render();
+}
+
+function shuffle() {
+  for (let i = activeDeck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [activeDeck[i], activeDeck[j]] = [activeDeck[j], activeDeck[i]];
+  }
+  idx = 0; render();
+}
+
+function toggleMode() {
+  mode = mode === "ja" ? "en" : "ja";
+  document.getElementById('modeBtn').textContent = mode === "ja" ? "EN → JA" : "JA → EN";
+  render();
+}
+
+function changeCat() { buildDeck(document.getElementById('catSelect').value); }
+
+function resetAll() {
+  if (!confirm("全ての進捗をリセットしますか？\nGot it と Again の記録が全て消えます。")) return;
+  gotitSet.clear(); againSet.clear();
+  saveStorage();
+  buildDeck(document.getElementById('catSelect').value);
+}
+
+function speak() {
+  if (!('speechSynthesis' in window) || !activeDeck.length) return;
+  const { w } = activeDeck[idx];
+  const utt = new SpeechSynthesisUtterance(w[0]);
+  utt.lang = 'ja-JP'; utt.rate = 0.85;
+  const ja = speechSynthesis.getVoices().find(v => v.lang.startsWith('ja'));
+  if (ja) utt.voice = ja;
+  speechSynthesis.cancel(); speechSynthesis.speak(utt);
+}
+
+const sel = document.getElementById('catSelect');
+CATS.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+speechSynthesis.onvoiceschanged = () => {};
+buildDeck("All Adjectives");
+</script>
+</body>
+</html>
