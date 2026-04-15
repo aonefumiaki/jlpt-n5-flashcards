@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JLPT N5 Nouns — Ohanasi JP School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4EF; --surface: #FFFFFF; --ink: #1A1714; --ink2: #6B6560; --ink3: #ABA7A2;
+    --accent: #2D6A4F; --danger: #C1440E; --border: rgba(26,23,20,0.10); --radius: 16px;
+    --font-display: 'DM Serif Display', serif; --font-body: 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-body); background: var(--bg); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
+  header { padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .logo { font-family: var(--font-display); font-size: 1.25rem; color: var(--ink); }
+  .logo span { color: var(--accent); }
+  .header-badge { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: rgba(45,106,79,0.10); padding: 4px 10px; border-radius: 99px; }
+  main { flex: 1; max-width: 680px; width: 100%; margin: 0 auto; padding: 1.5rem 1rem 3rem; display: flex; flex-direction: column; gap: 1rem; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  select { flex: 1; min-width: 180px; height: 40px; padding: 0 32px 0 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-family: var(--font-body); font-size: 0.875rem; color: var(--ink); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6560' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+  select:focus { outline: none; border-color: var(--accent); }
+  .btn { height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-family: var(--font-body); font-size: 0.8rem; font-weight: 500; color: var(--ink2); cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+  .btn:hover { background: var(--bg); color: var(--ink); }
+  .btn.danger { border-color: rgba(193,68,14,0.3); color: var(--danger); }
+  .btn.danger:hover { background: rgba(193,68,14,0.05); }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; }
+  .progress-bar { flex: 1; height: 3px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.4s ease; }
+  .progress-label { font-size: 0.75rem; color: var(--ink3); min-width: 48px; text-align: right; }
+  .mode-banner { display: none; background: #FEF3CD; border: 1px solid #EF9F27; border-radius: 10px; padding: 8px 16px; font-size: 12px; color: #854F0B; text-align: center; }
+  .mode-banner.show { display: block; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem 2rem; cursor: pointer; position: relative; transition: box-shadow 0.2s, transform 0.15s; user-select: none; }
+  .card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); transform: translateY(-1px); }
+  .card.flipped { background: #F0F7F3; border-color: rgba(45,106,79,0.2); }
+  .card.review { background: #FFF8F0; border-color: rgba(186,117,23,0.3); }
+  .card-cat { position: absolute; top: 14px; right: 16px; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink3); }
+  .card-num { position: absolute; top: 14px; left: 16px; font-size: 0.68rem; color: var(--ink3); }
+  .card-main { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .card-word { font-family: var(--font-display); font-size: clamp(2rem, 8vw, 3.2rem); color: var(--ink); line-height: 1.1; margin-bottom: 4px; }
+  .card-romaji { font-size: 0.78rem; color: var(--ink3); letter-spacing: 0.04em; margin-bottom: 2px; }
+  .card-furi { font-size: 1rem; color: var(--ink2); }
+  .card-answer { font-family: var(--font-display); font-size: clamp(1.5rem, 6vw, 2.4rem); color: var(--accent); text-align: center; line-height: 1.2; }
+  .card-hint { position: absolute; bottom: 14px; font-size: 0.72rem; color: var(--ink3); }
+  .nav-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .nav-btn { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: 1rem; color: var(--ink2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .nav-btn:hover { background: var(--bg); color: var(--ink); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .counter { font-size: 0.8rem; color: var(--ink3); min-width: 56px; text-align: center; }
+  .play-btn { height: 40px; padding: 0 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-family: var(--font-body); font-size: 0.8rem; font-weight: 500; color: var(--ink2); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
+  .play-btn:hover { background: var(--bg); color: var(--ink); }
+  .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .action-btn { height: 48px; border-radius: 12px; border: 1.5px solid; background: transparent; font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+  .action-btn.again { border-color: rgba(193,68,14,0.3); color: var(--danger); }
+  .action-btn.again:hover { background: rgba(193,68,14,0.06); }
+  .action-btn.gotit { border-color: rgba(45,106,79,0.3); color: var(--accent); }
+  .action-btn.gotit:hover { background: rgba(45,106,79,0.06); }
+  .review-btn { width: 100%; height: 42px; border-radius: 12px; border: 1px solid rgba(186,117,23,0.4); background: transparent; font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; color: #854F0B; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s; }
+  .review-btn:hover:not(:disabled) { background: rgba(186,117,23,0.06); }
+  .review-btn:disabled { opacity: 0.3; cursor: default; }
+  .review-btn.active { background: rgba(186,117,23,0.10); border-color: #BA7517; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 0.5rem; text-align: center; }
+  .stat-num { font-family: var(--font-display); font-size: 1.5rem; line-height: 1; color: var(--ink); margin-bottom: 2px; }
+  .stat-num.green { color: var(--accent); }
+  .stat-num.red { color: var(--danger); }
+  .stat-num.amber { color: #854F0B; }
+  .stat-label { font-size: 0.68rem; color: var(--ink3); letter-spacing: 0.04em; text-transform: uppercase; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--ink3); border-top: 1px solid var(--border); }
+  footer a { color: var(--accent); text-decoration: none; }
+  @media (max-width: 480px) { .stats { grid-template-columns: repeat(2, 1fr); } .card { min-height: 260px; padding: 2rem 1.25rem; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Ohanasi <span>JP</span> School</div>
+  <div class="header-badge">JLPT N5 · Nouns</div>
+</header>
+<main>
+  <div class="controls">
+    <select id="catSelect" onchange="changeCat()"></select>
+    <button class="btn" id="modeBtn" onclick="toggleMode()">EN → JA</button>
+    <button class="btn" onclick="shuffle()">Shuffle</button>
+    <button class="btn danger" onclick="resetAll()">Reset</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-label" id="progLabel">0%</div>
+  </div>
+  <div class="mode-banner" id="modeBanner">復習モード — Again のカードのみ表示中</div>
+  <div class="card" id="card" onclick="flip()">
+    <span class="card-num" id="cardNum"></span>
+    <span class="card-cat" id="cardCat"></span>
+    <div class="card-main" id="frontSide">
+      <div class="card-word" id="cardWord"></div>
+      <div class="card-romaji" id="cardRomaji"></div>
+      <div class="card-furi" id="cardFuri"></div>
+    </div>
+    <div id="backSide" style="display:none">
+      <div class="card-answer" id="cardAnswer"></div>
+    </div>
+    <div class="card-hint" id="cardHint">Tap to reveal</div>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn" onclick="prev()" id="prevBtn">&#8592;</button>
+    <span class="counter" id="counter"></span>
+    <button class="nav-btn" onclick="next()" id="nextBtn">&#8594;</button>
+    <button class="play-btn" onclick="speak()">
+      <svg style="width:14px;height:14px" viewBox="0 0 14 14" fill="none">
+        <circle cx="7" cy="7" r="6.5" stroke="currentColor" stroke-width="1"/>
+        <path d="M5.5 4.5l4 2.5-4 2.5V4.5z" fill="currentColor"/>
+      </svg>
+      Play
+    </button>
+  </div>
+  <div class="action-row">
+    <button class="action-btn again" onclick="mark('again')">Again</button>
+    <button class="action-btn gotit" onclick="mark('ok')">Got it ✓</button>
+  </div>
+  <button class="review-btn" id="reviewBtn" onclick="toggleReview()" disabled>
+    <svg style="width:13px;height:13px" viewBox="0 0 13 13" fill="none">
+      <path d="M2 6.5a4.5 4.5 0 108-2.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M10 1.5v2.2H7.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Again のみ復習 (<span id="againCount">0</span>)
+  </button>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="sTot">0</div><div class="stat-label">Total</div></div>
+    <div class="stat"><div class="stat-num" id="sRem">0</div><div class="stat-label">Remaining</div></div>
+    <div class="stat"><div class="stat-num green" id="sOk">0</div><div class="stat-label">Got it</div></div>
+    <div class="stat"><div class="stat-num amber" id="sAg">0</div><div class="stat-label">Again</div></div>
+  </div>
+</main>
+<footer>
+  Made with love by <a href="https://ohanasi-jpschool-members.com" target="_blank">Ohanasi JP School</a> &nbsp;·&nbsp; JLPT N5 Noun Vocabulary
+</footer>
+
+<script>
+const STORAGE_KEY = 'ohanasi_n5_nouns';
+
+const ALL_DATA = {
+  "Numbers": [
+    ["いち","ichi","1","1"],["に","ni","2","2"],["さん","san","3","3"],["よん・し","yon / shi","4","4"],
+    ["ご","go","5","5"],["ろく","roku","6","6"],["なな・しち","nana / shichi","7","7"],["はち","hachi","8","8"],
+    ["きゅう・く","kyū / ku","9","9"],["じゅう","jū","10","10"],["ひゃく","hyaku","100","100"],
+    ["せん","sen","1,000","1,000"],["まん","man","10,000","10,000"]
+  ],
+  "Occupation": [
+    ["ぎんこういん","ginkōin","bank employee","銀行員"],["かいしゃいん","kaishain","company employee","会社員"],
+    ["いしゃ","isha","doctor","医者"],["せんせい","sensē","teacher","先生"],
+    ["エンジニア","enjinia","engineer","エンジニア"],["てんいん","ten'in","clerk","店員"],
+    ["かしゅ","kashu","singer","歌手"],["けいさつかん","keisatsukan","police officer","警察官"],
+    ["がくせい","gakusē","student","学生"],["しゅふ","shufu","housewife","主婦"]
+  ],
+  "Country": [
+    ["くに","kuni","country","国"],["にほん","nihon","Japan","日本"],["かんこく","kankoku","Korea","韓国"],
+    ["ちゅうごく","chūgoku","China","中国"],["フィリピン","Firipin","Philippines","フィリピン"],
+    ["アメリカ","Amerika","America","アメリカ"],["ドイツ","Doitsu","Germany","ドイツ"],["イギリス","Igirisu","United Kingdom","イギリス"]
+  ],
+  "Language": [
+    ["にほんご","nihongo","Japanese","日本語"],["かんこくご","kankokugo","Korean","韓国語"],
+    ["ちゅうごくご","chūgokugo","Chinese","中国語"],["えいご","ēgo","English","英語"]
+  ],
+  "Places": [
+    ["ぎんこう","ginkō","bank","銀行"],["ゆうびんきょく","yūbinkyoku","post office","郵便局"],
+    ["びょういん","byōin","hospital","病院"],["かいしゃ","kaisha","company","会社"],
+    ["スーパー","sūpā","supermarket","スーパー"],["きっさてん","kissaten","café","喫茶店"],
+    ["レストラン","resutoran","restaurant","レストラン"],["デパート","depāto","department store","デパート"],
+    ["えいがかん","ēgakan","cinema","映画館"],["ほんや","honya","bookstore","本屋"],
+    ["コンビニ","konbini","convenience store","コンビニ"],["うち","uchi","home","家"],
+    ["がっこう","gakkō","school","学校"],["だいがく","daigaku","university","大学"],
+    ["アパート","apāto","apartment","アパート"],["トイレ","toire","toilet","トイレ"],
+    ["はくぶつかん","hakubutsukan","museum","博物館"],["こうえん","kōen","park","公園"],["まち","machi","town","町"]
+  ],
+  "Season": [
+    ["きせつ","kisetsu","season","季節"],["はる","haru","spring","春"],["なつ","natsu","summer","夏"],
+    ["あき","aki","autumn","秋"],["ふゆ","fuyu","winter","冬"]
+  ],
+  "People & Family": [
+    ["かぞく","kazoku","family","家族"],["ともだち","tomodachi","friend","友達"],
+    ["ちち","chichi","(my) father","父"],["おとうさん","otōsan","(their) father","お父さん"],
+    ["はは","haha","(my) mother","母"],["おかあさん","okāsan","(their) mother","お母さん"],
+    ["あに","ani","older brother","兄"],["あね","ane","older sister","姉"],
+    ["おとうと","otōto","younger brother","弟"],["いもうと","imōto","younger sister","妹"],
+    ["むすこ","musuko","son","息子"],["むすめ","musume","daughter","娘"],
+    ["おとこ","otoko","man","男"],["おんな","onna","woman","女"],
+    ["おっと","otto","(my) husband","夫"],["つま","tsuma","(my) wife","妻"],
+    ["こども","kodomo","child","子供"],["そふ","sofu","(my) grandfather","祖父"],
+    ["そぼ","sobo","(my) grandmother","祖母"],["まご","mago","grandchild","孫"]
+  ],
+  "Animals": [
+    ["どうぶつ","dōbutsu","animal","動物"],["いぬ","inu","dog","犬"],["ねこ","neko","cat","猫"],
+    ["ぶた","buta","pig","豚"],["うし","ushi","cow","牛"],["にわとり","niwatori","chicken","鶏"],
+    ["とり","tori","bird","鳥"],["さかな","sakana","fish","魚"]
+  ],
+  "Clothing": [
+    ["ふく","fuku","clothes","服"],["きもの","kimono","kimono","着物"],["ぼうし","bōshi","hat / cap","帽子"],
+    ["コート","kōto","coat","コート"],["Tシャツ","T-shatsu","T-shirt","Tシャツ"],
+    ["ズボン","zubon","pants","ズボン"],["スカート","sukāto","skirt","スカート"],
+    ["くつした","kutsushita","socks","靴下"],["くつ","kutsu","shoes","靴"],
+    ["めがね","megane","glasses","眼鏡"],["ネクタイ","nekutai","necktie","ネクタイ"]
+  ],
+  "Nature": [
+    ["うみ","umi","sea","海"],["かわ","kawa","river","川"],["やま","yama","mountain","山"],
+    ["かぜ","kaze","wind","風"],["き","ki","tree","木"],["もり","mori","forest","森"],
+    ["そら","sora","sky","空"],["くも","kumo","cloud","雲"],["いけ","ike","pond","池"],
+    ["はな","hana","flower","花"],["くさ","kusa","grass","草"],["あめ","ame","rain","雨"],["ゆき","yuki","snow","雪"]
+  ],
+  "Body Parts": [
+    ["からだ","karada","body","体"],["あたま","atama","head","頭"],["くび","kubi","neck","首"],
+    ["うで","ude","arm","腕"],["ゆび","yubi","finger","指"],["くち","kuchi","mouth","口"],
+    ["みみ","mimi","ear","耳"],["め","me","eye","目"],["はな","hana","nose","鼻"],
+    ["かみ","kami","hair","髪"],["あし","ashi","leg / foot","足"],["て","te","hand","手"]
+  ],
+  "Food": [
+    ["たべもの","tabemono","food","食べ物"],["りょうり","ryōri","cuisine","料理"],
+    ["ごはん","gohan","rice / meal","ご飯"],["パン","pan","bread","パン"],
+    ["ラーメン","rāmen","ramen","ラーメン"],["カレーライス","karēraisu","curry and rice","カレーライス"],
+    ["ハンバーガー","hanbāgā","hamburger","ハンバーガー"],["ケーキ","kēki","cake","ケーキ"],
+    ["べんとう","bentō","lunch box","弁当"],["うどん","udon","udon","うどん"],
+    ["みそしる","misoshiru","miso soup","味噌汁"],["ピザ","piza","pizza","ピザ"],
+    ["おにぎり","onigiri","rice ball","おにぎり"],["さかな","sakana","fish","魚"],
+    ["ぎゅうにく","gyūniku","beef","牛肉"],["ぶたにく","butaniku","pork","豚肉"],
+    ["とりにく","toriniku","chicken","鶏肉"],["たまご","tamago","egg","卵"]
+  ],
+  "Beverage": [
+    ["みず","mizu","water","水"],["ぎゅうにゅう","gyūnyū","milk","牛乳"],["ビール","bīru","beer","ビール"],
+    ["おちゃ","ocha","tea","お茶"],["コーヒー","kōhī","coffee","コーヒー"],
+    ["ワイン","wain","wine","ワイン"],["ジュース","jūsu","juice","ジュース"],["おさけ","osake","liquor","お酒"]
+  ],
+  "Fruits": [
+    ["くだもの","kudamono","fruit","果物"],["りんご","ringo","apple","りんご"],
+    ["バナナ","banana","banana","バナナ"],["みかん","mikan","mandarin orange","みかん"],["いちご","ichigo","strawberry","いちご"]
+  ],
+  "Vehicles": [
+    ["くるま","kuruma","car","車"],["タクシー","takushī","taxi","タクシー"],["バス","basu","bus","バス"],
+    ["バイク","baiku","motorcycle","バイク"],["じてんしゃ","jitensha","bicycle","自転車"],
+    ["でんしゃ","densha","train","電車"],["ちかてつ","chikatetsu","subway","地下鉄"],
+    ["ひこうき","hikōki","airplane","飛行機"],["ふね","fune","ship","船"]
+  ],
+  "Sports": [
+    ["テニス","tenisu","tennis","テニス"],["サッカー","sakkā","soccer","サッカー"],
+    ["バスケットボール","basukettobōru","basketball","バスケットボール"],
+    ["ゴルフ","gorufu","golf","ゴルフ"],["やきゅう","yakyū","baseball","野球"],["たっきゅう","takkyū","table tennis","卓球"]
+  ],
+  "Stationery": [
+    ["えんぴつ","enpitsu","pencil","鉛筆"],["ペン","pen","pen","ペン"],["ボールペン","bōrupen","ballpoint pen","ボールペン"],
+    ["けしゴム","keshigomu","eraser","消しゴム"],["はさみ","hasami","scissors","はさみ"],
+    ["かみ","kami","paper","紙"],["ノート","nōto","notebook","ノート"],
+    ["ふでばこ","fudebako","pencil case","筆箱"],["けいさんき","keisanki","calculator","計算機"]
+  ],
+  "Home & Furniture": [
+    ["いえ","ie","house","家"],["げんかん","genkan","entrance hall","玄関"],["だいどころ","daidokoro","kitchen","台所"],
+    ["へや","heya","room","部屋"],["ドア","doa","door","ドア"],["テーブル","tēburu","table","テーブル"],
+    ["いす","isu","chair","椅子"],["つくえ","tsukue","desk","机"],["まど","mado","window","窓"],
+    ["かいだん","kaidan","stairs","階段"],["ベッド","beddo","bed","ベッド"],
+    ["ほんだな","hondana","bookshelf","本棚"],["エアコン","eakon","air conditioner","エアコン"]
+  ],
+  "Days of the Week": [
+    ["にちようび","nichiyōbi","Sunday","日曜日"],["げつようび","getsuyōbi","Monday","月曜日"],
+    ["かようび","kayōbi","Tuesday","火曜日"],["すいようび","suiyōbi","Wednesday","水曜日"],
+    ["もくようび","mokuyōbi","Thursday","木曜日"],["きんようび","kin'yōbi","Friday","金曜日"],["どようび","doyōbi","Saturday","土曜日"]
+  ],
+  "Date & Time": [
+    ["きょう","kyō","today","今日"],["あした","ashita","tomorrow","明日"],["きのう","kinō","yesterday","昨日"],
+    ["いま","ima","now","今"],["あさ","asa","morning","朝"],["ひる","hiru","noon","昼"],
+    ["よる","yoru","night","夜"],["ことし","kotoshi","this year","今年"],["らいねん","rainen","next year","来年"],
+    ["きょねん","kyonen","last year","去年"],["こんげつ","kongetsu","this month","今月"],
+    ["らいげつ","raigetsu","next month","来月"],["せんげつ","sengetsu","last month","先月"],
+    ["こんしゅう","konshū","this week","今週"],["らいしゅう","raishū","next week","来週"],
+    ["せんしゅう","senshū","last week","先週"],["じかん","jikan","time / hour","時間"],
+    ["ふん","fun","minute","分"],["ねん","nen","year","年"],["つき","tsuki","month","月"]
+  ],
+  "Music & Instruments": [
+    ["おんがく","ongaku","music","音楽"],["うた","uta","song","歌"],["ピアノ","piano","piano","ピアノ"],
+    ["ギター","gitā","guitar","ギター"],["バイオリン","baiorin","violin","バイオリン"],["ドラム","doramu","drums","ドラム"]
+  ]
+};
+
+// ===== localStorage =====
+function loadStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : { gotit: [], again: [] };
+  } catch(e) { return { gotit: [], again: [] }; }
+}
+function saveStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      gotit: [...gotitSet],
+      again: [...againSet]
+    }));
+  } catch(e) {}
+}
+
+// ===== State =====
+const CATS = ["All Categories", ...Object.keys(ALL_DATA)];
+let stored = loadStorage();
+let gotitSet = new Set(stored.gotit);
+let againSet = new Set(stored.again);
+let allDeck = [], activeDeck = [], idx = 0, flipped = false, mode = "ja", reviewMode = false;
+
+function makeKey(w) { return w[0] + '_' + w[2]; }
+
+function buildDeck(catName) {
+  let words = [];
+  if (catName === "All Categories") {
+    Object.entries(ALL_DATA).forEach(([cat, ws]) => ws.forEach(w => words.push({ cat, w })));
+  } else {
+    (ALL_DATA[catName] || []).forEach(w => words.push({ cat: catName, w }));
+  }
+  allDeck = words;
+  reviewMode = false;
+  document.getElementById('modeBanner').classList.remove('show');
+  document.getElementById('reviewBtn').classList.remove('active');
+  activeDeck = allDeck.filter(item => !gotitSet.has(makeKey(item.w)));
+  idx = 0; flipped = false;
+  render();
+}
+
+function render() {
+  updateStats();
+  updateReviewBtn();
+  if (!activeDeck.length) {
+    document.getElementById('cardWord').textContent = reviewMode ? "復習完了！" : "全部マスター！";
+    document.getElementById('cardRomaji').textContent = "";
+    document.getElementById('cardFuri').textContent = "";
+    document.getElementById('cardAnswer').textContent = "";
+    document.getElementById('cardHint').textContent = "";
+    document.getElementById('cardCat').textContent = "";
+    document.getElementById('cardNum').textContent = "";
+    document.getElementById('counter').textContent = "0 / 0";
+    document.getElementById('progFill').style.width = "100%";
+    document.getElementById('progLabel').textContent = "100%";
+    document.getElementById('prevBtn').disabled = true;
+    document.getElementById('nextBtn').disabled = true;
+    return;
+  }
+  const { cat, w } = activeDeck[idx];
+  const [furi, romaji, en, kanji] = w;
+  flipped = false;
+  document.getElementById('cardCat').textContent = reviewMode ? "復習モード" : cat;
+  document.getElementById('cardNum').textContent = (idx + 1) + " / " + activeDeck.length;
+  const displayWord = (kanji && kanji !== furi && kanji.length <= 10) ? kanji : furi;
+  const showFuri = kanji && kanji !== furi;
+  if (mode === "ja") {
+    document.getElementById('cardWord').textContent = displayWord;
+    document.getElementById('cardRomaji').textContent = romaji;
+    document.getElementById('cardFuri').textContent = showFuri ? furi : "";
+    document.getElementById('cardAnswer').textContent = en;
+    document.getElementById('cardHint').textContent = "Tap to reveal English";
+  } else {
+    document.getElementById('cardWord').textContent = en;
+    document.getElementById('cardRomaji').textContent = romaji;
+    document.getElementById('cardFuri').textContent = showFuri ? furi + " (" + kanji + ")" : furi;
+    document.getElementById('cardAnswer').textContent = displayWord;
+    document.getElementById('cardHint').textContent = "Tap to reveal Japanese";
+  }
+  document.getElementById('frontSide').style.display = 'flex';
+  document.getElementById('frontSide').style.flexDirection = 'column';
+  document.getElementById('frontSide').style.alignItems = 'center';
+  document.getElementById('backSide').style.display = 'none';
+  const card = document.getElementById('card');
+  card.className = 'card' + (reviewMode ? ' review' : '');
+  const total = allDeck.length;
+  const mastered = gotitSet.size;
+  const pct = total > 0 ? Math.round((mastered / total) * 100) : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = pct + '%';
+  document.getElementById('counter').textContent = (idx + 1) + " / " + activeDeck.length;
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === activeDeck.length - 1;
+}
+
+function updateStats() {
+  const total = allDeck.length;
+  const masteredInDeck = allDeck.filter(item => gotitSet.has(makeKey(item.w))).length;
+  const againInDeck = allDeck.filter(item => againSet.has(makeKey(item.w))).length;
+  const remaining = total - masteredInDeck;
+  document.getElementById('sTot').textContent = total;
+  document.getElementById('sRem').textContent = remaining;
+  document.getElementById('sOk').textContent = masteredInDeck;
+  document.getElementById('sAg').textContent = againInDeck;
+}
+
+function updateReviewBtn() {
+  const againInDeck = allDeck.filter(item => againSet.has(makeKey(item.w))).length;
+  document.getElementById('againCount').textContent = againInDeck;
+  document.getElementById('reviewBtn').disabled = againInDeck === 0;
+}
+
+function flip() {
+  if (!activeDeck.length) return;
+  flipped = !flipped;
+  document.getElementById('frontSide').style.display = flipped ? 'none' : 'flex';
+  document.getElementById('backSide').style.display = flipped ? 'block' : 'none';
+  const card = document.getElementById('card');
+  card.className = (flipped ? 'card flipped' : 'card') + (reviewMode ? ' review' : '');
+  document.getElementById('cardHint').textContent = flipped ? "" : (mode === "ja" ? "Tap to reveal English" : "Tap to reveal Japanese");
+}
+
+function mark(type) {
+  if (!activeDeck.length) return;
+  const key = makeKey(activeDeck[idx].w);
+  if (type === 'ok') {
+    gotitSet.add(key);
+    againSet.delete(key);
+  } else {
+    againSet.add(key);
+    gotitSet.delete(key);
+  }
+  saveStorage();
+  // Got it → remove from activeDeck
+  if (type === 'ok') {
+    activeDeck.splice(idx, 1);
+    if (idx >= activeDeck.length) idx = Math.max(0, activeDeck.length - 1);
+  } else {
+    if (idx < activeDeck.length - 1) idx++;
+  }
+  render();
+}
+
+function next() { if (idx < activeDeck.length - 1) { idx++; render(); } }
+function prev() { if (idx > 0) { idx--; render(); } }
+
+function toggleReview() {
+  if (!reviewMode) {
+    const againItems = allDeck.filter(item => againSet.has(makeKey(item.w)));
+    if (!againItems.length) return;
+    reviewMode = true;
+    activeDeck = againItems;
+    idx = 0; flipped = false;
+    document.getElementById('modeBanner').classList.add('show');
+    document.getElementById('reviewBtn').classList.add('active');
+  } else {
+    reviewMode = false;
+    activeDeck = allDeck.filter(item => !gotitSet.has(makeKey(item.w)));
+    idx = 0; flipped = false;
+    document.getElementById('modeBanner').classList.remove('show');
+    document.getElementById('reviewBtn').classList.remove('active');
+  }
+  render();
+}
+
+function shuffle() {
+  for (let i = activeDeck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [activeDeck[i], activeDeck[j]] = [activeDeck[j], activeDeck[i]];
+  }
+  idx = 0; render();
+}
+
+function toggleMode() {
+  mode = mode === "ja" ? "en" : "ja";
+  document.getElementById('modeBtn').textContent = mode === "ja" ? "EN → JA" : "JA → EN";
+  render();
+}
+
+function changeCat() { buildDeck(document.getElementById('catSelect').value); }
+
+function resetAll() {
+  if (!confirm("全ての進捗をリセットしますか？\nGot it と Again の記録が全て消えます。")) return;
+  gotitSet.clear();
+  againSet.clear();
+  saveStorage();
+  buildDeck(document.getElementById('catSelect').value);
+}
+
+function speak() {
+  if (!('speechSynthesis' in window) || !activeDeck.length) return;
+  const { w } = activeDeck[idx];
+  const utt = new SpeechSynthesisUtterance(w[0]);
+  utt.lang = 'ja-JP'; utt.rate = 0.85;
+  const voices = speechSynthesis.getVoices();
+  const ja = voices.find(v => v.lang.startsWith('ja'));
+  if (ja) utt.voice = ja;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utt);
+}
+
+const sel = document.getElementById('catSelect');
+CATS.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+speechSynthesis.onvoiceschanged = () => {};
+buildDeck("All Categories");
+</script>
+</body>
+</html>
